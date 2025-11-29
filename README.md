@@ -132,6 +132,34 @@ tween:Play()
 
 ---
 
+## 🎭 Mini-jeu : Séduction (règles)
+
+Le mini-jeu "Séduction" suit les règles suivantes :
+
+- Jusqu'à **6 joueurs** peuvent participer.
+- Chaque joueur incarne un prétendant et commence avec **3 points de charme**.
+- À chaque tour, chaque joueur choisit UNE action :
+    - **Séduire la princesse** : le serveur lance un dé à 6 faces ; selon le résultat le prétendant gagne des points de charme :
+        - 1-2 : poème => +2 charme
+        - 3-4 : danse => +3 charme
+        - 5-6 : cadeau => +4 charme
+    - **Saboter un autre prétendant** : le joueur choisit une cible valide ; le serveur lance un dé et applique une pénalité à la cible :
+        - 1-2 : répandre des rumeurs => -2 charme
+        - 3-4 : voler un cadeau => -3 charme
+        - 5-6 : interrompre une performance => -4 charme
+    - **Se reposer** : regagne +2 charme
+
+- Un joueur est éliminé quand ses points de charme atteignent **0**.
+- Le jeu se termine si un joueur atteint **15 points de charme** ou si tous les autres joueurs sont éliminés.
+- Le joueur avec le plus de charme à la fin gagne et "séduit la princesse".
+
+Notes d'implémentation : le système fourni dans `ServerScriptService` contient :
+- `InitReplicatedStorage.lua` : initialise les RemoteEvents `RequestAction`, `ActionChosen`, `UpdateState`.
+- `GameLoop/MatchManager.lua` : gère la boucle tour-par-tour et résout les actions.
+- `LocalPlayer/LocalScripts/ActionMenu.lua` : UI simple pour choisir l'action par tour.
+
+Vous pouvez personnaliser les paramètres (temps par tour, points de départ, score de victoire) dans `ServerScriptService/Config/GameConfig.lua`.
+
 **Version:** 1.0.0  
 **Auteur:** Votre Nom  
 **Date:** 29 Novembre 2025

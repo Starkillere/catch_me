@@ -9,6 +9,8 @@ local PlayerManager = {}
 -- Données des joueurs
 PlayerManager.Players = {}
 
+local GameConfig = require(game.ServerScriptService.Config.GameConfig)
+
 -- Configuration du joueur au spawn
 function PlayerManager:SetupPlayer(player)
 	self.Players[player.UserId] = {
@@ -16,17 +18,17 @@ function PlayerManager:SetupPlayer(player)
 		Name = player.Name,
 		Character = nil,
 		Stats = {
-			Score = 0,
-			Health = 100,
-			IsCatcher = false
+			Charm = GameConfig.PlayerStartCharm or 3,
+			Health = GameConfig.PlayerStartHealth or 100,
+			IsPrincess = false
 		}
 	}
-	
+    
 	-- Attendre le spawn du personnage
 	if player.Character then
 		self:OnCharacterSpawned(player, player.Character)
 	end
-	
+    
 	player.CharacterAdded:Connect(function(character)
 		self:OnCharacterSpawned(player, character)
 	end)
@@ -36,10 +38,10 @@ end
 function PlayerManager:OnCharacterSpawned(player, character)
 	print("✨ [PlayerManager] " .. player.Name .. " a spawn!")
 	self.Players[player.UserId].Character = character
-	
+    
 	-- Ajouter le humanoid et configurer la santé
 	local humanoid = character:WaitForChild("Humanoid")
-	humanoid.Health = 100
+	humanoid.Health = GameConfig.PlayerStartHealth or 100
 end
 
 -- Mettre à jour le joueur
@@ -59,22 +61,18 @@ function PlayerManager:CleanupPlayer(player)
 	print("🗑️  [PlayerManager] Données de " .. player.Name .. " supprimées")
 end
 
--- Donner des points
-function PlayerManager:AddScore(player, points)
+-- Modifier les points de charme (peut être négatif)
+function PlayerManager:AddCharm(player, points)
 	if self.Players[player.UserId] then
-		self.Players[player.UserId].Stats.Score += points
+		local s = self.Players[player.UserId].Stats
+		s.Charm = s.Charm + points
+		if s.Charm < 0 then s.Charm = 0 end
 	end
 end
 
--- Définir l'attrapeur
-function PlayerManager:SetCatcher(player)
-	for _, playerData in pairs(self.Players) do
-		playerData.Stats.IsCatcher = false
-	end
-	if self.Players[player.UserId] then
-		self.Players[player.UserId].Stats.IsCatcher = true
-		print("🎯 [PlayerManager] " .. player.Name .. " est maintenant l'attrapeur!")
-	end
+-- Lire les données d'un joueur
+function PlayerManager:GetPlayerData(player)
+	return self.Players[player.UserId]
 end
 
 return PlayerManager

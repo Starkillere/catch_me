@@ -18,7 +18,9 @@ local GameConfig = {
 	-- Configuration des joueurs
 	PlayerStartHealth = 100,
 	PlayerMovementSpeed = 50,
-	
+	PlayerStartCharm = 3,
+	ActionTimeLimit = 20, -- secondes pour choisir une action par tour
+
 	-- Configuration de l'attrapeur
 	CatcherDuration = 30,
 	CatcherSpeed = 60,
